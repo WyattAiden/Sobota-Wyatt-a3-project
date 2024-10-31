@@ -19,7 +19,7 @@ namespace Game10003
         public void Setup()
         {
             Window.SetTitle("Concentration");
-            Window.SetSize(800, 600);
+            Window.SetSize(400, 400);
         }
 
         /// <summary>
@@ -27,7 +27,10 @@ namespace Game10003
         /// </summary>
         public void Update()
         {
+            Window.ClearBackground(Color.White);
 
+
+            
         }
     }
 }
