@@ -3,12 +3,13 @@ using System.Numerics;
 
 namespace Game10003
 {
-    public class Deck 
+    public class Deck
     {
         public void Update()
         {
             CardDeck();
         }
+
         private void CardDeck()
         {
             Draw.FillColor = Color.Red;

@@ -1,4 +1,5 @@
 ﻿// Include code libraries you need below (use the namespace).
+using Game10003;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -10,13 +11,19 @@ namespace Game10003
     /// <summary>
     ///     Your game code goes inside this class!
     /// </summary>
-    public class Game
+    public class Game : IGame
     {
         // Place your variables here:
         Deck PlaceDeck;
 
         Vector2[] Positions = new Vector2[12];
         Card[] cards = new Card[12];
+        private List<Card> flippedCards = new List<Card>();
+        private float flipBackTimer = 0;
+
+        public static int Score = 0;
+        public static bool EndGame = false;
+        public static bool WinGame = false;
         public void Setup()
         {
             Window.SetTitle("Concentration");
@@ -55,11 +62,10 @@ namespace Game10003
                     int y = j * 100 + 50;
                     int inex = i + j * 4;
                     Positions[inex] = new Vector2(x, y);
-                    cards[inex] = new Card(x,y);
                     cards[inex] = new Card(x, y, colorPairs[inex]);
                 }
             }
-            
+
             PlaceDeck = new Deck();
         }
 
@@ -69,12 +75,61 @@ namespace Game10003
         public void Update()
         {
             Window.ClearBackground(Color.White);
-            
+
+            if (flipBackTimer > 0)
+            {
+                flipBackTimer -= Time.DeltaTime;
+                if (flipBackTimer <= 0)
+                {
+                    ResetFlippedCards();
+                }
+            }
+
             foreach (Card card in cards)
             {
                 card.Update();
+
+                if (!card.CardFaceDown && !card.Matched && !flippedCards.Contains(card))
+                {
+                    flippedCards.Add(card);
+                }
+
+                if (flippedCards.Count == 2 && flipBackTimer <= 0)
+                {
+                    CheckForMatch();
+                }
+                Text.Draw($"Score: {Game.Score}", new Vector2(200, 10));
             }
+
             PlaceDeck.Update();
+        }
+
+        private void CheckForMatch()
+        {
+            if (flippedCards.Count == 2)
+            {
+                if (flippedCards[0].FrontColor.Equals(flippedCards[1].FrontColor))
+                {
+                    flippedCards[0].Matched = true;
+                    flippedCards[1].Matched = true;
+                    flippedCards.Clear(); // Clear immediately after matching
+                }
+                else
+                {
+                    // Start the timer to delay flipping back unmatched cards
+                    flipBackTimer = 0.5f; // Half-second delay
+                }
+            }
+        }
+
+        private void ResetFlippedCards()
+        {
+            if (flippedCards.Count == 2)
+            {
+                flippedCards[0].ToggleFace();
+                flippedCards[1].ToggleFace();
+                flippedCards.Clear();
+            }
         }
     }
 }

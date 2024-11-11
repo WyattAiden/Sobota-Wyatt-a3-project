@@ -10,6 +10,7 @@ namespace Game10003
         private float H;
         public float X;
         public float Y;
+        public bool Matched = false; // New property to indicate if the card is matched
         public Color FrontColor; // The color displayed on the front of the card
 
         public Card(float xpos,float ypos, Color color)
@@ -27,9 +28,11 @@ namespace Game10003
             Y = y;
         }
 
-        bool CardFaceDown = true;
+        public bool CardFaceDown { get; private set; } = true;
         public void Update()
         {
+
+            if (Matched) return;
             // Check if the left mouse button is pressed and if the mouse is over this card
             if (Input.IsMouseButtonPressed(MouseInput.Left) && IsMouseTouchingBox())
             {
@@ -43,7 +46,10 @@ namespace Game10003
             else
                 CardFront(X, Y);
         }
-
+        public void ToggleFace()
+        {
+            CardFaceDown = !CardFaceDown;
+        }
         private bool IsMouseTouchingBox()
         {
             // Get the current mouse position
